@@ -26,7 +26,7 @@ thread_local Local CPPLOG_NAMESPACE::internal::local;
 
 static std::mutex queueMutex;
 static std::queue<std::tuple<CPPLOG_NAMESPACE::Level, std::string, std::chrono::system_clock::time_point>> logQueue;
-static std::chrono::milliseconds LOG_UPDATE_INTERVAL{CPPLOG_UPDATE_INTERVAL};
+static std::chrono::milliseconds LOG_UPDATE_INTERVAL{CPPLOG_LOG_INTERVAL};
 
 //
 // Logger thread
