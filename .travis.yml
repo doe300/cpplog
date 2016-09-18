@@ -9,9 +9,12 @@ matrix:
       env:
       - COMPILER=clang++
       - CPPFLAGS="-I /usr/include/c++/v1"
+      - CPPFLAGS="-stdlib=libc++"
     - os: osx
       compiler: clang
-      env: COMPILER=clang++
+      env: 
+      - COMPILER=clang++
+      - CPPFLAGS="-stdlib=libc++"
       # GCC is linked to clang, so we don't need to compile twice for same compiler/platform
 
 before_script:
