@@ -9,6 +9,7 @@
 
 #include <ostream>
 #include <memory>
+#include <string>
 
 namespace CPPLOG_NAMESPACE
 {
@@ -28,30 +29,30 @@ namespace CPPLOG_NAMESPACE
         SEVERE = 'S'
     };
 
-    std::ostream& log(const Level level);
-    std::ostream& endl(std::ostream& stream);
+    std::wostream& log(const Level level);
+    std::wostream& endl(std::wostream& stream);
 
-    inline std::ostream& debug()
+    inline std::wostream& debug()
     {
         return log(Level::DEBUG);
     }
 
-    inline std::ostream& info()
+    inline std::wostream& info()
     {
         return log(Level::INFO);
     }
 
-    inline std::ostream& warn()
+    inline std::wostream& warn()
     {
         return log(Level::WARNING);
     }
 
-    inline std::ostream& error()
+    inline std::wostream& error()
     {
         return log(Level::ERROR);
     }
 
-    inline std::ostream& severe()
+    inline std::wostream& severe()
     {
         return log(Level::SEVERE);
     }
@@ -66,6 +67,11 @@ namespace CPPLOG_NAMESPACE
      */ 
     extern std::unique_ptr<Logger> LOGGER;
 }
+
+/*!
+ * Convenience-wrapper to allow writing std::string into std::wostream
+ */
+std::wostream& operator <<(std::wostream& stream, const std::string& string);
 
 #endif /* LOG_H */
 

@@ -29,7 +29,7 @@ bool Logger::logLevel(const Level level)
     return level >= minLevel;
 }
 
-std::string Logger::getCurrentTime()
+const std::string Logger::getCurrentTime()
 {
     time_t now = time(0);
     std::string text = ctime(&now);
@@ -38,20 +38,20 @@ std::string Logger::getCurrentTime()
     return text;
 }
 
-std::string Logger::toString(Level level)
+const std::wstring Logger::toString(Level level)
 {
     switch (level) {
     case Level::DEBUG:
-        return "[D]";
+        return L"[D]";
     case Level::INFO:
-        return "[I]";
+        return L"[I]";
     case Level::WARNING:
-        return "[W]";
+        return L"[W]";
     case Level::ERROR:
-        return "[E]";
+        return L"[E]";
     case Level::SEVERE:
     default:
-        return "[S]";
+        return L"[S]";
     }
 }
 
@@ -64,17 +64,17 @@ ConsoleLogger::~ConsoleLogger()
 }
 
 void ConsoleLogger::logMessage(const Level level,
-                               const std::string local,
+                               const std::wstring& local,
                                const std::chrono::system_clock::time_point timestamp)
 {
     if (!logLevel(level)) {
         return;
     }
     if (level == Level::ERROR || level == Level::SEVERE) {
-        std::cerr << toString(level) << " " << getCurrentTime() << ": " << local;
+        std::wcerr << toString(level) << " " << getCurrentTime() << ": " << local;
     }
     else {
-        std::cout << toString(level) << " " << getCurrentTime() << ": " << local;
+        std::wcout << toString(level) << " " << getCurrentTime() << ": " << local;
     }
 }
 
@@ -89,12 +89,12 @@ FileLogger::~FileLogger()
 }
 
 void FileLogger::logMessage(const Level level,
-                            const std::string local,
+                            const std::wstring& local,
                             const std::chrono::system_clock::time_point timestamp)
 {
 }
 
-ColoredLogger::ColoredLogger(std::ostream& stream, const Level minLevel) : Logger(minLevel), stream(stream)
+ColoredLogger::ColoredLogger(std::wostream& stream, const Level minLevel) : Logger(minLevel), stream(stream)
 {
 }
 
@@ -103,7 +103,7 @@ ColoredLogger::~ColoredLogger()
 }
 
 void ColoredLogger::logMessage(const Level level,
-                               const std::string local,
+                               const std::wstring& local,
                                const std::chrono::system_clock::time_point timestamp)
 {
     if (!logLevel(level)) {

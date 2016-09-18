@@ -18,11 +18,11 @@ namespace CPPLOG_NAMESPACE
     public:
         virtual ~Logger();
         
-        virtual void logMessage(const Level level, const std::string local, const std::chrono::system_clock::time_point timestamp) = 0;
+        virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) = 0;
     protected:
-        virtual std::string getCurrentTime();
+        virtual const std::string getCurrentTime();
         
-        virtual std::string toString(Level level);
+        virtual const std::wstring toString(Level level);
 
         bool logLevel(const Level level);
 
@@ -38,7 +38,7 @@ namespace CPPLOG_NAMESPACE
 
         virtual ~ConsoleLogger();
         
-        virtual void logMessage(const Level level, const std::string local, const std::chrono::system_clock::time_point timestamp) override;
+        virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) override;
     };
     
     class FileLogger : public Logger
@@ -48,22 +48,22 @@ namespace CPPLOG_NAMESPACE
 
         virtual ~FileLogger();
         
-        virtual void logMessage(const Level level, const std::string local, const std::chrono::system_clock::time_point timestamp) override;
+        virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) override;
         
     private:
-        std::ofstream fileStream;
+        std::wofstream fileStream;
     };
     
     class ColoredLogger : public Logger
     {
     public:
-    	ColoredLogger(std::ostream& stream, const Level minLevel = Level::DEBUG);
+    	ColoredLogger(std::wostream& stream, const Level minLevel = Level::DEBUG);
         virtual ~ColoredLogger();
         
-        virtual void logMessage(const Level level, const std::string local, const std::chrono::system_clock::time_point timestamp) override;
+        virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) override;
         
     private:
-        std::ostream& stream;
+        std::wostream& stream;
     };
 }
 
