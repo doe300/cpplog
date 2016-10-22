@@ -56,6 +56,8 @@ namespace CPPLOG_NAMESPACE
     {
         return log(Level::SEVERE);
     }
+    
+    void logf(const Level level, const wchar_t* format, ...);
 
     //Forward-declaration for the logger-instance
     class Logger;
