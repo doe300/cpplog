@@ -43,6 +43,7 @@ The default behavior is to output the logs every *100ms*.
 - Setting the global variable **LOGGER** in the framework's namespace (by default **log::LOGGER**) determines the logger to be used.
 Resetting **LOGGER** to the *nullptr* disables logging for the remainder of the program's life. 
 This also shuts down the logging-thread, so no CPU time is wasted. By default, the **LOGGER** is set to **ConsoleLogger** (see section Extensions).
+- The macro **CPPLOG_NO_THREADS** can be set to disable dedicated logging-thread. This will cause all logging to occur in the calling threads.
 
 ## Extensions
 In the current version, CppLog comes with three built-in Loggers:

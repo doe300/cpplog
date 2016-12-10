@@ -34,27 +34,27 @@ namespace CPPLOG_NAMESPACE
 
     inline std::wostream& debug()
     {
-        return log(Level::DEBUG);
+        return CPPLOG_NAMESPACE::log(Level::DEBUG);
     }
 
     inline std::wostream& info()
     {
-        return log(Level::INFO);
+        return CPPLOG_NAMESPACE::log(Level::INFO);
     }
 
     inline std::wostream& warn()
     {
-        return log(Level::WARNING);
+        return CPPLOG_NAMESPACE::log(Level::WARNING);
     }
 
     inline std::wostream& error()
     {
-        return log(Level::ERROR);
+        return CPPLOG_NAMESPACE::log(Level::ERROR);
     }
 
     inline std::wostream& severe()
     {
-        return log(Level::SEVERE);
+        return CPPLOG_NAMESPACE::log(Level::SEVERE);
     }
     
     void logf(const Level level, const wchar_t* format, ...);

@@ -31,7 +31,7 @@ static std::chrono::milliseconds LOG_UPDATE_INTERVAL{CPPLOG_LOG_INTERVAL};
 //
 // Logger thread
 //
-
+#ifndef CPPLOG_NO_THREADS
 static void loggerLoop()
 {
     std::chrono::system_clock::time_point start;
@@ -64,3 +64,10 @@ void CPPLOG_NAMESPACE::internal::appendLog(const CPPLOG_NAMESPACE::Level level, 
     std::lock_guard<std::mutex> guard(queueMutex);
     logQueue.emplace(level, local, timestamp);
 }
+
+#else
+void CPPLOG_NAMESPACE::internal::appendLog(const CPPLOG_NAMESPACE::Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp)
+{
+    CPPLOG_NAMESPACE::LOGGER->logMessage(level, local, timestamp);
+}
+#endif
