@@ -67,10 +67,10 @@ void ConsoleLogger::logMessage(const Level level,
                                const std::wstring& local,
                                const std::chrono::system_clock::time_point timestamp)
 {
+	if (!logLevel(level)) {
+		return;
+	}
 	std::lock_guard<std::mutex> guard(writeLock);
-    if (!logLevel(level)) {
-        return;
-    }
     if (level == Level::ERROR || level == Level::SEVERE) {
         std::wcerr << toString(level) << " " << getCurrentTime() << ": " << local;
     }
@@ -93,10 +93,10 @@ void FileLogger::logMessage(const Level level,
                             const std::wstring& local,
                             const std::chrono::system_clock::time_point timestamp)
 {
-	std::lock_guard<std::mutex> guard(writeLock);
 	if (!logLevel(level)) {
 		return;
 	}
+	std::lock_guard<std::mutex> guard(writeLock);
 	fileStream << toString(level) << " " << getCurrentTime() << ": " << local;
 }
 
@@ -112,10 +112,10 @@ void ColoredLogger::logMessage(const Level level,
                                const std::wstring& local,
                                const std::chrono::system_clock::time_point timestamp)
 {
-	std::lock_guard<std::mutex> guard(writeLock);
     if (!logLevel(level)) {
         return;
     }
+    std::lock_guard<std::mutex> guard(writeLock);
     if (level == Level::ERROR || level == Level::SEVERE) {
         stream << "\033[31m" << toString(level) << " " << getCurrentTime() << ": " << local << "\033[39;49m";
 
