@@ -22,7 +22,7 @@ static void logThread()
     while(true)
     {
         log::debug() << "Test from: " << threadID << log::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds{10});
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
         log::error() << "Test 2 from : " << threadID << log::endl;
     }
 }
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     while(true)
     {
         log::debug() << std::string("Test") << log::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds{10});
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
         log::error() << "Test2" << log::endl;
     }
     
