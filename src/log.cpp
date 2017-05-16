@@ -33,10 +33,10 @@ std::wostream& CPPLOG_NAMESPACE::endl(std::wostream& stream)
                                           CPPLOG_NAMESPACE::internal::local.start);
 
     //reset stream-data
-    //realStream.str(std::string());
-    //realStream.clear();
-    //or 
-    std::wstringstream().swap(CPPLOG_NAMESPACE::internal::local.stream);
+	CPPLOG_NAMESPACE::internal::local.stream.str(std::wstring());
+	CPPLOG_NAMESPACE::internal::local.stream.clear();
+	//or
+	//std::wstringstream().swap(CPPLOG_NAMESPACE::internal::local.stream);
 
     return CPPLOG_NAMESPACE::internal::local.stream;
 }

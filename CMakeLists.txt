@@ -16,7 +16,7 @@ if(WIN32)
 	set(CMAKE_CXX_FLAGS "/W3 /D_UNICODE /DUNICODE")
 	add_library(cpplog STATIC ${SRCS})
 else()
-	SET(CMAKE_CXX_FLAGS "-std=c++0x -O3 -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -pthread -fPIC -Wpedantic")
+	SET(CMAKE_CXX_FLAGS "-std=c++0x -O3 -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wpedantic -pthread -fPIC")
 	add_library(cpplog SHARED ${SRCS})
 endif()
 
