@@ -14,8 +14,7 @@ CppLog is a very small library consisting of only two public header files:
 - logger.h: This header contains the Logger-classes. You only need to include this file if you want to customize the logging output (style, destination, ...)
 
 To support multi-threaded applications, any thread writing logs has its own instance of an output-stream where it assembles the logging output in.
-With the call of the *endl* function, the message is added to a thread-safe queue, which is then read from an extra logging thread and printed to the logging device.
-This concept also speeds up logging, since the output onto a possible slow medium (file system or console) is moved to an extra thread and does not stall the application's threads.
+With the call of the *endl* function, the message is written to the output in a thread-safe fashion.
 
 ## Usage
 
@@ -37,13 +36,9 @@ CppLog can optionally be configured in several ways:
 
 - The macro **CPPLOG_NAMESPACE** determines the namespace, the logging framework is accessible in (defaults to *"log"*).
 **CPPLOG_NAMESPACE** can be chosen freely, as long as it remains a valid C++11 namespace name.
-- The logging interval in which the logs are actually written to the output can be configured with **CPPLOG_LOG_INTERVAL**. 
-Any numerical value is accepted and a value of *x* results in writing logs every *x* ms (milliseconds). 
-The default behavior is to output the logs every *100ms*.
 - Setting the global variable **LOGGER** in the framework's namespace (by default **log::LOGGER**) determines the logger to be used.
 Resetting **LOGGER** to the *nullptr* disables logging for the remainder of the program's life. 
 This also shuts down the logging-thread, so no CPU time is wasted. By default, the **LOGGER** is set to **ConsoleLogger** (see section Extensions).
-- The macro **CPPLOG_NO_THREADS** can be set to disable dedicated logging-thread. This will cause all logging to occur in the calling threads.
 
 ## Extensions
 In the current version, CppLog comes with three built-in Loggers:

@@ -19,6 +19,7 @@ using namespace CPPLOG_NAMESPACE;
 
 std::wostream& CPPLOG_NAMESPACE::log(const Level level)
 {
+	//TODO if level under log-level, write to null-stream? Performance?
     CPPLOG_NAMESPACE::internal::local.start = std::chrono::system_clock::now();
     CPPLOG_NAMESPACE::internal::local.level = level;
     return CPPLOG_NAMESPACE::internal::local.stream;

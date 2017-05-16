@@ -15,7 +15,7 @@
 
 using namespace CPPLOG_NAMESPACE;
 
-Logger::Logger(const Level minLevel) : minLevel(minLevel)
+Logger::Logger(const Level minLevel) : minLevel(minLevel), writeLock()
 {
 }
 
@@ -67,6 +67,7 @@ void ConsoleLogger::logMessage(const Level level,
                                const std::wstring& local,
                                const std::chrono::system_clock::time_point timestamp)
 {
+	std::lock_guard<std::mutex> guard(writeLock);
     if (!logLevel(level)) {
         return;
     }
@@ -92,6 +93,11 @@ void FileLogger::logMessage(const Level level,
                             const std::wstring& local,
                             const std::chrono::system_clock::time_point timestamp)
 {
+	std::lock_guard<std::mutex> guard(writeLock);
+	if (!logLevel(level)) {
+		return;
+	}
+	fileStream << toString(level) << " " << getCurrentTime() << ": " << local;
 }
 
 ColoredLogger::ColoredLogger(std::wostream& stream, const Level minLevel) : Logger(minLevel), stream(stream)
@@ -106,6 +112,7 @@ void ColoredLogger::logMessage(const Level level,
                                const std::wstring& local,
                                const std::chrono::system_clock::time_point timestamp)
 {
+	std::lock_guard<std::mutex> guard(writeLock);
     if (!logLevel(level)) {
         return;
     }

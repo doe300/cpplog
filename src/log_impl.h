@@ -23,9 +23,9 @@ namespace CPPLOG_NAMESPACE
             CPPLOG_NAMESPACE::Level level;
             std::chrono::system_clock::time_point start;
         };
-        
+
         extern thread_local Local local;
-        
+
         void appendLog(const CPPLOG_NAMESPACE::Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp);
     }
 }
