@@ -100,7 +100,26 @@ void FileLogger::logMessage(const Level level,
 	fileStream << toString(level) << " " << getCurrentTime() << ": " << local;
 }
 
-ColoredLogger::ColoredLogger(std::wostream& stream, const Level minLevel) : Logger(minLevel), stream(stream)
+StreamLogger::StreamLogger(std::wostream& stream, const Level minLevel) : Logger(minLevel), stream(stream)
+{
+}
+
+StreamLogger::~StreamLogger()
+{
+}
+
+void StreamLogger::logMessage(const Level level,
+                               const std::wstring& local,
+                               const std::chrono::system_clock::time_point timestamp)
+{
+	if (!logLevel(level)) {
+		return;
+	}
+	std::lock_guard<std::mutex> guard(writeLock);
+	stream << toString(level) << " " << getCurrentTime() << ": " << local;
+}
+
+ColoredLogger::ColoredLogger(std::wostream& stream, const Level minLevel) : StreamLogger(stream, minLevel)
 {
 }
 

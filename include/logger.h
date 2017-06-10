@@ -32,7 +32,7 @@ namespace CPPLOG_NAMESPACE
 
         bool logLevel(const Level level);
 
-        Logger(const Level minLevel = Level::DEBUG);
+        Logger(const Level minLevel = Level::INFO);
 
         Level minLevel;
         std::mutex writeLock;
@@ -41,7 +41,7 @@ namespace CPPLOG_NAMESPACE
     class ConsoleLogger : public Logger
     {
     public:
-    	ConsoleLogger(const Level minLevel = Level::DEBUG);
+    	ConsoleLogger(const Level minLevel = Level::INFO);
 
         virtual ~ConsoleLogger();
         
@@ -51,7 +51,7 @@ namespace CPPLOG_NAMESPACE
     class FileLogger : public Logger
     {
     public:
-    	FileLogger(const std::string fileName, const Level minLevel = Level::DEBUG);
+    	FileLogger(const std::string fileName, const Level minLevel = Level::INFO);
 
         virtual ~FileLogger();
         
@@ -61,17 +61,25 @@ namespace CPPLOG_NAMESPACE
         std::wofstream fileStream;
     };
     
-    class ColoredLogger : public Logger
+    class StreamLogger : public Logger
     {
     public:
-    	ColoredLogger(std::wostream& stream, const Level minLevel = Level::DEBUG);
-        virtual ~ColoredLogger();
-        
-        virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) override;
-        
-    private:
-        std::wostream& stream;
+    	StreamLogger(std::wostream& stream, const Level minLevel = Level::INFO);
+    	virtual ~StreamLogger();
+
+    	virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) override;
+    protected:
+    	std::wostream& stream;
     };
+
+    class ColoredLogger : public StreamLogger
+	{
+	public:
+		ColoredLogger(std::wostream& stream, const Level minLevel = Level::INFO);
+		virtual ~ColoredLogger();
+
+		virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) override;
+	};
 }
 
 #endif /* LOGGER_H */
