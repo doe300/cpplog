@@ -35,6 +35,7 @@ build/
 Makefile
 cmake_install.cmake
 compile_commands.json
+/install_manifest.txt
 
 #Netbeans
 nbproject/
@@ -42,3 +43,4 @@ nbproject/
 #Eclipse
 .cproject
 .project
+.csettings

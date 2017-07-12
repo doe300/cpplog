@@ -51,16 +51,16 @@ namespace CPPLOG_NAMESPACE
     class FileLogger : public Logger
     {
     public:
-    	FileLogger(const std::string fileName, const Level minLevel = Level::INFO);
+    	FileLogger(const std::string& fileName, const Level minLevel = Level::INFO);
 
         virtual ~FileLogger();
-        
+
         virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) override;
-        
+
     private:
         std::wofstream fileStream;
     };
-    
+
     class StreamLogger : public Logger
     {
     public:

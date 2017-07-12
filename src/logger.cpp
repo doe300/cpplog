@@ -79,7 +79,7 @@ void ConsoleLogger::logMessage(const Level level,
     }
 }
 
-FileLogger::FileLogger(const std::string fileName, const Level minLevel) : Logger(minLevel), fileStream(fileName, std::ios::out)
+FileLogger::FileLogger(const std::string& fileName, const Level minLevel) : Logger(minLevel), fileStream(fileName, std::ios::out)
 {
 }
 

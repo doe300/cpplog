@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.1)
 
 project (cpplog VERSION 0.4)
 
-option(CPPLOG_BUILD_TEST "Build the concurrency test-application" ON)
+option(CPPLOG_BUILD_TEST "Build the concurrency test-application" OFF)
 set(CPPLOG_NAMESPACE "log" CACHE STRING "Namespace for the cpplog library" )
 
 #Include the header and source files
@@ -43,3 +43,10 @@ if(CPPLOG_BUILD_TEST)
 	target_link_libraries(cpplog-test cpplog)
 	set_target_properties(cpplog-test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build")
 endif()
+
+
+# Installation targets
+install(TARGETS cpplog EXPORT cpplog LIBRARY DESTINATION lib)
+install(EXPORT cpplog DESTINATION share/cpplog)
+install(DIRECTORY include/ DESTINATION include/cpplog FILES_MATCHING PATTERN "*.h")
+add_custom_target(uninstall "${CMAKE_COMMAND}" -P "cmake_uninstall.cmake") 
