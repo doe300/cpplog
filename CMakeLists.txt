@@ -45,8 +45,18 @@ if(CPPLOG_BUILD_TEST)
 endif()
 
 
+##
 # Installation targets
-install(TARGETS cpplog EXPORT cpplog LIBRARY DESTINATION lib)
-install(EXPORT cpplog DESTINATION share/cpplog)
+##
+# Adds the public headers to the target, so they are exported
+target_include_directories(cpplog PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  $<INSTALL_INTERFACE:include/cpplog>)
+# Creates the install target for the library
+install(TARGETS cpplog EXPORT cpplog-targets LIBRARY DESTINATION lib)
+# Creates the export target (to be used by CMake to find the INSTALLED library)
+install(EXPORT cpplog-targets DESTINATION share/cpplog)
+# Creates the install target for the headers
 install(DIRECTORY include/ DESTINATION include/cpplog FILES_MATCHING PATTERN "*.h")
+# Exports the target (to be used by CMake to find the SOURCE library)
+export(TARGETS cpplog FILE cpplog-exports.cmake)
+# Adds custom uninstall command
 add_custom_target(uninstall "${CMAKE_COMMAND}" -P "cmake_uninstall.cmake") 

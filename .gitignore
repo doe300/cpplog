@@ -36,6 +36,7 @@ Makefile
 cmake_install.cmake
 compile_commands.json
 /install_manifest.txt
+/cpplog-exports.cmake
 
 #Netbeans
 nbproject/
