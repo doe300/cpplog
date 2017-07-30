@@ -9,6 +9,7 @@
  */
 #include "log.h"
 #include "log_impl.h"
+#include "logger.h"
 
 #include <sstream>
 #include <chrono>
@@ -19,24 +20,34 @@ using namespace CPPLOG_NAMESPACE;
 
 std::wostream& CPPLOG_NAMESPACE::log(const Level level)
 {
-	//TODO if level under log-level, write to null-stream? Performance?
-    CPPLOG_NAMESPACE::internal::local.start = std::chrono::system_clock::now();
-    CPPLOG_NAMESPACE::internal::local.level = level;
+	if(!(LOGGER && LOGGER->willBeLogged(level)))
+	{
+		//apparently setting the bad-bit will prevent the << operators from running conversion, which saves some processing power
+		//https://stackoverflow.com/questions/8243743/is-there-a-null-stdostream-implementation-in-c-or-libraries
+		CPPLOG_NAMESPACE::internal::local.stream.setstate(std::ios::badbit);
+	}
+	else
+	{
+		CPPLOG_NAMESPACE::internal::local.start = std::chrono::system_clock::now();
+		CPPLOG_NAMESPACE::internal::local.level = level;
+	}
     return CPPLOG_NAMESPACE::internal::local.stream;
 }
 
 std::wostream& CPPLOG_NAMESPACE::endl(std::wostream& stream)
 {
     stream << std::endl;
-    CPPLOG_NAMESPACE::internal::appendLog(CPPLOG_NAMESPACE::internal::local.level,
-                                          CPPLOG_NAMESPACE::internal::local.stream.str(),
-                                          CPPLOG_NAMESPACE::internal::local.start);
+    if(!CPPLOG_NAMESPACE::internal::local.stream.bad())
+    {
+    	//only write to underyling logger, if we didn't set the bad-bit
+		CPPLOG_NAMESPACE::internal::appendLog(CPPLOG_NAMESPACE::internal::local.level,
+											  CPPLOG_NAMESPACE::internal::local.stream.str(),
+											  CPPLOG_NAMESPACE::internal::local.start);
+    }
 
-    //reset stream-data
+    //reset stream-data (and state)
 	CPPLOG_NAMESPACE::internal::local.stream.str(std::wstring());
 	CPPLOG_NAMESPACE::internal::local.stream.clear();
-	//or
-	//std::wstringstream().swap(CPPLOG_NAMESPACE::internal::local.stream);
 
     return CPPLOG_NAMESPACE::internal::local.stream;
 }

@@ -8,9 +8,8 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
-
-
 #include <cstdlib>
+
 #include "log.h"
 #include "logger.h"
 

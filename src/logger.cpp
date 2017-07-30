@@ -24,9 +24,23 @@ Logger::~Logger()
 
 }
 
-bool Logger::logLevel(const Level level)
+bool Logger::willBeLogged(const Level level) const
 {
-    return level >= minLevel;
+	switch(minLevel)
+	{
+		case Level::DEBUG:
+			return true;
+		case Level::INFO:
+			return level != Level::DEBUG;
+		case Level::WARNING:
+			return level != Level::DEBUG && level != Level::INFO;
+		case Level::ERROR:
+			return level == Level::ERROR || level == Level::SEVERE;
+		case Level::SEVERE:
+			return level == Level::SEVERE;
+		default:
+			throw std::invalid_argument("Log level not handled!");
+	}
 }
 
 const std::string Logger::getCurrentTime()
@@ -67,7 +81,7 @@ void ConsoleLogger::logMessage(const Level level,
                                const std::wstring& local,
                                const std::chrono::system_clock::time_point timestamp)
 {
-	if (!logLevel(level)) {
+	if (!willBeLogged(level)) {
 		return;
 	}
 	std::lock_guard<std::mutex> guard(writeLock);
@@ -93,7 +107,7 @@ void FileLogger::logMessage(const Level level,
                             const std::wstring& local,
                             const std::chrono::system_clock::time_point timestamp)
 {
-	if (!logLevel(level)) {
+	if (!willBeLogged(level)) {
 		return;
 	}
 	std::lock_guard<std::mutex> guard(writeLock);
@@ -112,7 +126,7 @@ void StreamLogger::logMessage(const Level level,
                                const std::wstring& local,
                                const std::chrono::system_clock::time_point timestamp)
 {
-	if (!logLevel(level)) {
+	if (!willBeLogged(level)) {
 		return;
 	}
 	std::lock_guard<std::mutex> guard(writeLock);
@@ -131,7 +145,7 @@ void ColoredLogger::logMessage(const Level level,
                                const std::wstring& local,
                                const std::chrono::system_clock::time_point timestamp)
 {
-    if (!logLevel(level)) {
+    if (!willBeLogged(level)) {
         return;
     }
     std::lock_guard<std::mutex> guard(writeLock);

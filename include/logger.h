@@ -25,12 +25,15 @@ namespace CPPLOG_NAMESPACE
          * NOTE: Implementations of this method need to be thread-safe, e.g. this method can be written to from multiple threads concurrently
          */
         virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) = 0;
+
+        /*
+         * Whether a log text with this level will be logged, e.g. the given level is larger or equals minLevel
+         */
+        bool willBeLogged(const Level level) const;
     protected:
         virtual const std::string getCurrentTime();
         
         virtual const std::wstring toString(Level level);
-
-        bool logLevel(const Level level);
 
         Logger(const Level minLevel = Level::INFO);
 
