@@ -10,24 +10,26 @@
 
 #include "log.h"
 
-#include <sstream>
 #include <chrono>
+#include <sstream>
 
 namespace CPPLOG_NAMESPACE
 {
-    namespace internal
-    {
-        struct Local
-        {
-            std::wstringstream stream;
-            CPPLOG_NAMESPACE::Level level;
-            std::chrono::system_clock::time_point start;
-        };
+	namespace internal
+	{
+		struct Local
+		{
+			std::wstringstream stream;
+			std::chrono::system_clock::time_point start;
+			CPPLOG_NAMESPACE::Level level;
 
-        extern thread_local Local local;
+			explicit Local() noexcept;
+		};
 
-        void appendLog(const CPPLOG_NAMESPACE::Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp);
-    }
+		extern thread_local Local local;
+
+		void appendLog(CPPLOG_NAMESPACE::Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp);
+	} // namespace internal
 }
 
 #endif /* LOG_IMPL_H */

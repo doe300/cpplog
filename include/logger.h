@@ -8,80 +8,106 @@
 #define LOGGER_H
 
 #include "log.h"
+
 #include <chrono>
 #include <fstream>
 #include <mutex>
 
 namespace CPPLOG_NAMESPACE
 {
-    class Logger
-    {
-    public:
-        virtual ~Logger();
-        
-        /*
-         * Writes the log to the output beneath
-         *
-         * NOTE: Implementations of this method need to be thread-safe, e.g. this method can be written to from multiple threads concurrently
-         */
-        virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) = 0;
-
-        /*
-         * Whether a log text with this level will be logged, e.g. the given level is larger or equals minLevel
-         */
-        bool willBeLogged(const Level level) const;
-    protected:
-        virtual const std::string getCurrentTime();
-        
-        virtual const std::wstring toString(Level level);
-
-        Logger(const Level minLevel = Level::INFO);
-
-        Level minLevel;
-        std::mutex writeLock;
-    };
-    
-    class ConsoleLogger : public Logger
-    {
-    public:
-    	ConsoleLogger(const Level minLevel = Level::INFO);
-
-        virtual ~ConsoleLogger();
-        
-        virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) override;
-    };
-    
-    class FileLogger : public Logger
-    {
-    public:
-    	FileLogger(const std::string& fileName, const Level minLevel = Level::INFO);
-
-        virtual ~FileLogger();
-
-        virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) override;
-
-    private:
-        std::wofstream fileStream;
-    };
-
-    class StreamLogger : public Logger
-    {
-    public:
-    	StreamLogger(std::wostream& stream, const Level minLevel = Level::INFO);
-    	virtual ~StreamLogger();
-
-    	virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) override;
-    protected:
-    	std::wostream& stream;
-    };
-
-    class ColoredLogger : public StreamLogger
+	class Logger
 	{
 	public:
-		ColoredLogger(std::wostream& stream, const Level minLevel = Level::INFO);
-		virtual ~ColoredLogger();
+		Logger(const Logger&) = delete;
+		Logger(Logger&&) = delete;
+		virtual ~Logger() = default;
 
-		virtual void logMessage(const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp) override;
+		Logger& operator=(const Logger&) = delete;
+		Logger& operator=(Logger&&) = delete;
+
+		/*
+		 * Writes the log to the output beneath
+		 *
+		 * NOTE: Implementations of this method need to be thread-safe, e.g. this method can be written to from multiple threads concurrently
+		 */
+		virtual void logMessage(Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp) = 0;
+
+		/*
+		 * Whether a log text with this level will be logged, e.g. the given level is larger or equals minLevel
+		 */
+		bool willBeLogged(Level level) const;
+
+	protected:
+		virtual const std::string getCurrentTime();
+
+		virtual const std::wstring toString(Level level);
+
+		explicit Logger(Level minLevel = Level::INFO) noexcept;
+
+		std::mutex writeLock;
+		Level minLevel;
+	};
+
+	class ConsoleLogger : public Logger
+	{
+	public:
+		explicit ConsoleLogger(Level minLevel = Level::INFO) noexcept;
+		ConsoleLogger(const ConsoleLogger&) = delete;
+		ConsoleLogger(ConsoleLogger&&) = delete;
+		~ConsoleLogger() override = default;
+
+		ConsoleLogger& operator=(const ConsoleLogger&) = delete;
+		ConsoleLogger& operator=(ConsoleLogger&&) = delete;
+
+		void logMessage(Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp) override;
+	};
+
+	class FileLogger : public Logger
+	{
+	public:
+		explicit FileLogger(const std::string& fileName, Level minLevel = Level::INFO);
+		FileLogger(const FileLogger&) = delete;
+		FileLogger(FileLogger&&) = delete;
+		~FileLogger() override;
+
+		FileLogger& operator=(const FileLogger&) = delete;
+		FileLogger& operator=(FileLogger&&) = delete;
+
+		void logMessage(Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp) override;
+
+	private:
+		std::wofstream fileStream;
+	};
+
+	class StreamLogger : public Logger
+	{
+	public:
+		explicit StreamLogger(std::wostream& stream, Level minLevel = Level::INFO);
+		StreamLogger(const StreamLogger&) = delete;
+		StreamLogger(StreamLogger&&) = delete;
+		~StreamLogger() override = default;
+
+		StreamLogger& operator=(const StreamLogger&) = delete;
+		StreamLogger& operator=(StreamLogger&&) = delete;
+
+		void logMessage(Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp) override;
+
+	protected:
+		std::wostream& stream;
+	};
+
+	class ColoredLogger : public StreamLogger
+	{
+	public:
+		explicit ColoredLogger(std::wostream& stream, Level minLevel = Level::INFO);
+		ColoredLogger(const ColoredLogger&) = delete;
+		ColoredLogger(ColoredLogger&&) = delete;
+		~ColoredLogger() override = default;
+
+		ColoredLogger& operator=(const ColoredLogger&) = delete;
+		ColoredLogger& operator=(ColoredLogger&&) = delete;
+
+		void logMessage(Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp) override;
 	};
 }
 

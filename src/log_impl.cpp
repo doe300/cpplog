@@ -23,7 +23,12 @@ std::unique_ptr<CPPLOG_NAMESPACE::Logger> CPPLOG_NAMESPACE::LOGGER = std::unique
 
 thread_local Local CPPLOG_NAMESPACE::internal::local;
 
+Local::Local() noexcept : level{CPPLOG_NAMESPACE::Level::DEBUG}
+{
+
+}
+
 void CPPLOG_NAMESPACE::internal::appendLog(const CPPLOG_NAMESPACE::Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp)
 {
-    CPPLOG_NAMESPACE::LOGGER->logMessage(level, local, timestamp);
+	CPPLOG_NAMESPACE::LOGGER->logMessage(level, local, timestamp);
 }
