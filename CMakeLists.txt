@@ -20,12 +20,18 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 endif()
 
+# If CPPLOG_CUSTOM_LOGGER is set via command-line, the global CPPLOG_NAMESPACE::LOGGER variable needs to be given by the application including this library
+if(CPPLOG_CUSTOM_LOGGER)
+	add_definitions(-DCPPLOG_CUSTOM_LOGGER)
+endif()
+
 if(WIN32)
 	set(CMAKE_CXX_FLAGS "/W3 /D_UNICODE /DUNICODE")
 	add_library(cpplog STATIC ${SRCS})
 else()
 	SET(CMAKE_CXX_FLAGS "-std=c++0x -O3 -Wall -Wextra -Wold-style-cast -Wno-unused-parameter -Wno-missing-field-initializers -Wpedantic -pthread -fPIC")
 	add_library(cpplog SHARED ${SRCS})
+	add_library(cpplog-static STATIC ${SRCS})
 endif()
 
 # Enable sanitizers
