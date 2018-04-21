@@ -23,6 +23,7 @@ static void logThread()
         log::debug() << "Test from: " << threadID << log::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         log::error() << "Test 2 from : " << threadID << log::endl;
+        CPPLOG_LAZY(log::Level::INFO, log << "Lazy logging!" << log::endl);
     }
 }
 

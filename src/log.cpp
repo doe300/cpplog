@@ -62,6 +62,12 @@ void CPPLOG_NAMESPACE::logf(const Level level, const wchar_t* format, ...)
 	log(level) << std::wstring(buffer.data(), static_cast<std::size_t>(num)) << endl;
 }
 
+void CPPLOG_NAMESPACE::logLazy(Level level, std::function<void(std::wostream&)>&& statement)
+{
+	if(LOGGER->willBeLogged(level))
+		statement(log(level));
+}
+
 std::wostream& operator<<(std::wostream& stream, const std::string& string)
 {
 	std::vector<wchar_t> result(string.size());

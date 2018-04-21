@@ -7,6 +7,7 @@
 #ifndef LOG_H
 #define LOG_H
 
+#include <functional>
 #include <memory>
 #include <ostream>
 #include <string>
@@ -59,6 +60,13 @@ namespace CPPLOG_NAMESPACE
 
 	void logf(Level level, const wchar_t* format, ...);
 
+	/*!
+	 * Wrapper around a logging statement to only execute it if the level of logging
+	 * will be written to the output.
+	 * This can be used to skip complex logging statements when not required.
+	 */
+	void logLazy(Level level, std::function<void(std::wostream&)>&& statement);
+
 	//Forward-declaration for the logger-instance
 	class Logger;
 	/*!
@@ -74,6 +82,18 @@ namespace CPPLOG_NAMESPACE
  * Convenience-wrapper to allow writing std::string into std::wostream
  */
 std::wostream& operator <<(std::wostream& stream, const std::string& string);
+
+/*!
+ * Convenience macro for lazy logging.
+ * Within content, the logging-stream 'log' is available.
+ *
+ * Example usage:
+ * CPPLOG_LAZY(Level::DEBUG, log << "Hello World! << endl);
+ */
+#define CPPLOG_LAZY(level, content) \
+CPPLOG_NAMESPACE::logLazy(level, [](std::wostream& log){ \
+	content; \
+})\
 
 #endif /* LOG_H */
 
