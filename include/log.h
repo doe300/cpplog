@@ -91,7 +91,7 @@ std::wostream& operator <<(std::wostream& stream, const std::string& string);
  * CPPLOG_LAZY(Level::DEBUG, log << "Hello World! << endl);
  */
 #define CPPLOG_LAZY(level, content) \
-CPPLOG_NAMESPACE::logLazy(level, [](std::wostream& log){ \
+CPPLOG_NAMESPACE::logLazy(level, [&](std::wostream& log){ \
 	content; \
 })\
 
