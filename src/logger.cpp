@@ -5,12 +5,10 @@
  * Created on September 16, 2016, 1:56 PM
  */
 
-#include <ios>
-
-
 #include "logger.h"
 
 #include <ctime>
+#include <ios>
 #include <iostream>
 
 using namespace CPPLOG_NAMESPACE;

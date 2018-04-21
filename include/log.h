@@ -25,7 +25,7 @@ namespace CPPLOG_NAMESPACE
 		WARNING = 'W',
 		//program-error
 		ERROR = 'E',
-		//critical software--error
+		//critical software-error
 		SEVERE = 'S'
 	};
 

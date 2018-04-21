@@ -1,6 +1,3 @@
-
-#include <chrono>
-
 /* 
  * File:   log_impl.cpp
  * Author: doe300
@@ -10,6 +7,7 @@
 #include "log_impl.h"
 #include "../include/logger.h"
 
+#include <chrono>
 #include <mutex>
 #include <queue>
 #include <utility>
