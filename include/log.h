@@ -66,6 +66,13 @@ namespace CPPLOG_NAMESPACE
 	 * This can be used to skip complex logging statements when not required.
 	 */
 	void logLazy(Level level, std::function<void(std::wostream&)>&& statement);
+	
+	/*!
+	 * Wrapper around several logging statements to only execute them if the level of
+	 * logging will be written to the output.
+	 * This can be used to skip complex logging statements when not required.
+	 */
+	 void logLazy(Level level, std::function<void()>&& statement);
 
 	//Forward-declaration for the logger-instance
 	class Logger;
@@ -92,6 +99,17 @@ std::wostream& operator <<(std::wostream& stream, const std::string& string);
  */
 #define CPPLOG_LAZY(level, content) \
 CPPLOG_NAMESPACE::logLazy(level, [&](std::wostream& log){ \
+	content; \
+})\
+
+/*!
+ * Convenience macro for lazy logging.
+ *
+ * Example usage:
+ * CPPLOG_LAZY(Level::DEBUG, debug() << "Hello World! << endl; debug() << "Second statement!" << endl);
+ */
+#define CPPLOG_LAZY_BLOCK(level, content) \
+CPPLOG_NAMESPACE::logLazy(level, [&](){ \
 	content; \
 })\
 

@@ -68,6 +68,12 @@ void CPPLOG_NAMESPACE::logLazy(Level level, std::function<void(std::wostream&)>&
 		statement(log(level));
 }
 
+void CPPLOG_NAMESPACE::logLazy(Level level, std::function<void()>&& statement)
+{
+	if(LOGGER->willBeLogged(level))
+		statement();
+}
+
 std::wostream& operator<<(std::wostream& stream, const std::string& string)
 {
 	std::vector<wchar_t> result(string.size());
