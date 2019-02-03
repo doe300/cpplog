@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   log_impl.h
  * Author: doe300
  *
@@ -15,22 +15,22 @@
 
 namespace CPPLOG_NAMESPACE
 {
-	namespace internal
-	{
-		struct Local
-		{
-			std::wstringstream stream;
-			std::chrono::system_clock::time_point start;
-			CPPLOG_NAMESPACE::Level level;
+    namespace internal
+    {
+        struct Local
+        {
+            std::wstringstream stream;
+            std::chrono::system_clock::time_point start;
+            CPPLOG_NAMESPACE::Level level;
 
-			explicit Local() noexcept;
-		};
+            explicit Local() noexcept;
+        };
 
-		extern thread_local Local local;
+        extern thread_local Local local;
 
-		void appendLog(CPPLOG_NAMESPACE::Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp);
-	} // namespace internal
-}
+        void appendLog(
+            CPPLOG_NAMESPACE::Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp);
+    } // namespace internal
+} // namespace CPPLOG_NAMESPACE
 
 #endif /* LOG_IMPL_H */
-

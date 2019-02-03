@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   main.cpp
  * Author: doe300
  *
@@ -6,9 +6,9 @@
  */
 
 #include <chrono>
-#include <thread>
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
+#include <thread>
 
 #include "log.h"
 #include "logger.h"
@@ -24,30 +24,31 @@ static void logThread()
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         log::error() << "Test 2 from : " << threadID << log::endl;
         CPPLOG_LAZY(log::Level::INFO, log << "Lazy logging!" << log::endl);
+        CPPLOG_LAZY_BLOCK(log::Level::INFO, log::info() << "More lazy logging" << log::endl;
+                          log::debug() << "Even more lazy logging" << log::endl);
     }
 }
 
 /*
- * 
+ *
  */
 int main(int argc, char** argv)
 {
     log::LOGGER.reset(new log::ColoredLogger(std::wcout));
 
     log::info() << "Dummy" << log::endl;
-    
-    for(int i= 0; i < 10; i++)
+
+    for(int i = 0; i < 10; i++)
     {
         new std::thread(&logThread);
     }
-    
+
     while(true)
     {
         log::debug() << std::string("Test") << log::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         log::error() << "Test2" << log::endl;
     }
-    
+
     return 0;
 }
-
