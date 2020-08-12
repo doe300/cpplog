@@ -3,6 +3,14 @@ sudo: false
 
 language: cpp
 
+addons:
+  apt:
+    update: true
+    packages:
+      # Update CMake to required version
+      - cmake-data
+      - cmake
+
 matrix:
   include:
     - os: linux
