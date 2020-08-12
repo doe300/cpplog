@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.13)
 
 # Set C++ standard to C++11 without any extensions (e.g. GNU)
 set(CMAKE_CXX_STANDARD 11)
@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-project (cpplog VERSION 0.4)
+project (cpplog VERSION 0.5)
 
 option(CPPLOG_BUILD_TEST "Build the concurrency test-application" OFF)
 option(ENABLE_SANITIZERS "Enable build with various sanitizers" OFF)
@@ -58,10 +58,12 @@ endif()
 if(ENABLE_SANITIZERS)
 	target_compile_options(cpplog PRIVATE -fsanitize=address -fsanitize=leak -fsanitize=undefined)
 	target_compile_options(cpplog PRIVATE -fdelete-null-pointer-checks -Wnull-dereference -Wuninitialized -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wsuggest-override -Wconversion -Wzero-as-null-pointer-constant)
+	target_link_options(cpplog PUBLIC -fsanitize=address -fsanitize=leak -fsanitize=undefined)
 	
 	if(TARGET cpplog-static)
 		target_compile_options(cpplog-static PRIVATE -fsanitize=address -fsanitize=leak -fsanitize=undefined)
 		target_compile_options(cpplog-static PRIVATE -fdelete-null-pointer-checks -Wnull-dereference -Wuninitialized -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wsuggest-override -Wconversion -Wzero-as-null-pointer-constant)
+		target_link_options(cpplog-static PUBLIC -fsanitize=address -fsanitize=leak -fsanitize=undefined)
 	endif()
 
 endif()
@@ -101,4 +103,4 @@ install(DIRECTORY include/ DESTINATION include/cpplog FILES_MATCHING PATTERN "*.
 # Exports the target (to be used by CMake to find the SOURCE library)
 export(TARGETS cpplog FILE cpplog-exports.cmake)
 # Adds custom uninstall command
-add_custom_target(uninstall "${CMAKE_COMMAND}" -P "cmake_uninstall.cmake") 
+add_custom_target(uninstall "${CMAKE_COMMAND}" -P "cmake_uninstall.cmake")

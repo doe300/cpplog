@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 {
     (void) argc;
     (void) argv;
-    log::LOGGER.reset(new log::ColoredLogger(std::wcout));
+    log::DEFAULT_LOGGER.reset(new log::ColoredLogger(std::wcout));
 
     log::info() << "Dummy" << log::endl;
 
@@ -45,11 +45,21 @@ int main(int argc, char** argv)
         new std::thread(&logThread);
     }
 
+    unsigned counter = 0;
+
     while(true)
     {
         log::debug() << std::string("Test") << log::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         log::error() << "Test2" << log::endl;
+        ++counter;
+        if(counter > 100)
+        {
+            // tests the ability to reset the logger while using it
+            log::warn() << "Changing logger..." << log::endl;
+            log::DEFAULT_LOGGER.reset(new log::ColoredLogger(std::wcout));
+            counter = 0;
+        }
     }
 
     return EXIT_SUCCESS;

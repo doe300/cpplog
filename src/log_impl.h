@@ -19,11 +19,17 @@ namespace CPPLOG_NAMESPACE
     {
         struct Local
         {
+        public:
             std::wstringstream stream;
             std::chrono::system_clock::time_point start;
             CPPLOG_NAMESPACE::Level level;
 
             explicit Local() noexcept;
+
+            Logger* getLogger();
+
+        private:
+            Logger* logger;
         };
 
         extern thread_local Local local;
