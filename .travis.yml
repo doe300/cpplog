@@ -30,9 +30,10 @@ matrix:
 
 before_script:
   - echo $TRAVIS_OS_NAME
+  - which cmake
   
   - mkdir build
   - cd build
-  - cmake ../
+  - /usr/bin/cmake ../
   
 script: make
