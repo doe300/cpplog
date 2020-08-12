@@ -28,8 +28,8 @@ namespace CPPLOG_NAMESPACE
 
         extern thread_local Local local;
 
-        void appendLog(
-            CPPLOG_NAMESPACE::Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp);
+        void appendLog(CPPLOG_NAMESPACE::Level level, const std::wstring& message,
+            std::chrono::system_clock::time_point timestamp);
     } // namespace internal
 } // namespace CPPLOG_NAMESPACE
 

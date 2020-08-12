@@ -44,7 +44,7 @@ namespace CPPLOG_NAMESPACE
 
         virtual const std::wstring toString(Level level);
 
-        explicit Logger(Level minLevel = Level::INFO) noexcept;
+        explicit Logger(Level minimumLevel = Level::INFO) noexcept;
 
         std::mutex writeLock;
         Level minLevel;
@@ -53,7 +53,7 @@ namespace CPPLOG_NAMESPACE
     class ConsoleLogger : public Logger
     {
     public:
-        explicit ConsoleLogger(Level minLevel = Level::INFO) noexcept;
+        explicit ConsoleLogger(Level minimumLevel = Level::INFO) noexcept;
         ConsoleLogger(const ConsoleLogger&) = delete;
         ConsoleLogger(ConsoleLogger&&) = delete;
         ~ConsoleLogger() override = default;
@@ -68,7 +68,7 @@ namespace CPPLOG_NAMESPACE
     class FileLogger : public Logger
     {
     public:
-        explicit FileLogger(const std::string& fileName, Level minLevel = Level::INFO);
+        explicit FileLogger(const std::string& fileName, Level minimumLevel = Level::INFO);
         FileLogger(const FileLogger&) = delete;
         FileLogger(FileLogger&&) = delete;
         ~FileLogger() override;
@@ -86,7 +86,7 @@ namespace CPPLOG_NAMESPACE
     class StreamLogger : public Logger
     {
     public:
-        explicit StreamLogger(std::wostream& stream, Level minLevel = Level::INFO);
+        explicit StreamLogger(std::wostream& out, Level minimumLevel = Level::INFO);
         StreamLogger(const StreamLogger&) = delete;
         StreamLogger(StreamLogger&&) = delete;
         ~StreamLogger() override = default;
@@ -104,7 +104,7 @@ namespace CPPLOG_NAMESPACE
     class ColoredLogger : public StreamLogger
     {
     public:
-        explicit ColoredLogger(std::wostream& stream, Level minLevel = Level::INFO);
+        explicit ColoredLogger(std::wostream& out, Level minimumLevel = Level::INFO);
         ColoredLogger(const ColoredLogger&) = delete;
         ColoredLogger(ColoredLogger&&) = delete;
         ~ColoredLogger() override = default;

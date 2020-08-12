@@ -13,7 +13,7 @@
 
 using namespace CPPLOG_NAMESPACE;
 
-Logger::Logger(const Level minLevel) noexcept : writeLock(), minLevel(minLevel) {}
+Logger::Logger(const Level minimumLevel) noexcept : writeLock(), minLevel(minimumLevel) {}
 
 bool Logger::willBeLogged(const Level level) const
 {
@@ -61,7 +61,7 @@ const std::wstring Logger::toString(Level level)
     }
 }
 
-ConsoleLogger::ConsoleLogger(const Level minLevel) noexcept : Logger(minLevel) {}
+ConsoleLogger::ConsoleLogger(const Level minimumLevel) noexcept : Logger(minimumLevel) {}
 
 void ConsoleLogger::logMessage(
     const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp)
@@ -75,8 +75,8 @@ void ConsoleLogger::logMessage(
         std::wcout << toString(level) << " " << getCurrentTime() << ": " << local;
 }
 
-FileLogger::FileLogger(const std::string& fileName, const Level minLevel) :
-    Logger(minLevel), fileStream(fileName, std::ios::out)
+FileLogger::FileLogger(const std::string& fileName, const Level minimumLevel) :
+    Logger(minimumLevel), fileStream(fileName, std::ios::out)
 {
 }
 
@@ -95,7 +95,7 @@ void FileLogger::logMessage(
     fileStream << toString(level) << " " << getCurrentTime() << ": " << local;
 }
 
-StreamLogger::StreamLogger(std::wostream& stream, const Level minLevel) : Logger(minLevel), stream(stream) {}
+StreamLogger::StreamLogger(std::wostream& out, const Level minimumLevel) : Logger(minimumLevel), stream(out) {}
 
 void StreamLogger::logMessage(
     const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp)
@@ -106,7 +106,7 @@ void StreamLogger::logMessage(
     stream << toString(level) << " " << getCurrentTime() << ": " << local;
 }
 
-ColoredLogger::ColoredLogger(std::wostream& stream, const Level minLevel) : StreamLogger(stream, minLevel) {}
+ColoredLogger::ColoredLogger(std::wostream& out, const Level minimumLevel) : StreamLogger(out, minimumLevel) {}
 
 void ColoredLogger::logMessage(
     const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp)

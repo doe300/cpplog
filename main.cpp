@@ -34,6 +34,8 @@ static void logThread()
  */
 int main(int argc, char** argv)
 {
+    (void) argc;
+    (void) argv;
     log::LOGGER.reset(new log::ColoredLogger(std::wcout));
 
     log::info() << "Dummy" << log::endl;
@@ -50,5 +52,5 @@ int main(int argc, char** argv)
         log::error() << "Test2" << log::endl;
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
