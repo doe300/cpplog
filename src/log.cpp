@@ -7,7 +7,6 @@
 #include "log.h"
 
 #include "log_impl.h"
-#include "logger.h"
 
 #include <chrono>
 #include <cstdarg>
@@ -20,7 +19,7 @@ using namespace CPPLOG_NAMESPACE;
 std::wostream& CPPLOG_NAMESPACE::log(const Level level)
 {
     auto& local = CPPLOG_NAMESPACE::internal::local;
-    if(!(local.getLogger() && local.getLogger()->willBeLogged(level)))
+    if(!(local.willBeLogged(level)))
     {
         // apparently setting the bad-bit will prevent the << operators from running conversion, which saves some
         // processing power
@@ -42,7 +41,7 @@ std::wostream& CPPLOG_NAMESPACE::endl(std::wostream& stream)
     if(!local.stream.bad())
     {
         // only write to underyling logger, if we didn't set the bad-bit
-        CPPLOG_NAMESPACE::internal::appendLog(local.level, local.stream.str(), local.start);
+        local.writeMessage();
     }
 
     // reset stream-data (and state)
@@ -66,15 +65,21 @@ void CPPLOG_NAMESPACE::logf(const Level level, const wchar_t* format, ...)
 void CPPLOG_NAMESPACE::logLazy(Level level, std::function<void(std::wostream&)>&& statement)
 {
     auto& local = CPPLOG_NAMESPACE::internal::local;
-    if(local.getLogger() && local.getLogger()->willBeLogged(level))
+    if(local.willBeLogged(level))
         statement(log(level));
 }
 
 void CPPLOG_NAMESPACE::logLazy(Level level, std::function<void()>&& statement)
 {
     auto& local = CPPLOG_NAMESPACE::internal::local;
-    if(local.getLogger() && local.getLogger()->willBeLogged(level))
+    if(local.willBeLogged(level))
         statement();
+}
+
+void CPPLOG_NAMESPACE::setThreadLogger(Logger* logger)
+{
+    auto& local = CPPLOG_NAMESPACE::internal::local;
+    local.setLogger(logger);
 }
 
 std::wostream& operator<<(std::wostream& stream, const std::string& string)

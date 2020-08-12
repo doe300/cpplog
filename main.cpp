@@ -47,6 +47,7 @@ int main(int argc, char** argv)
 
     unsigned counter = 0;
 
+    log::setThreadLogger(log::DEFAULT_LOGGER.get());
     while(true)
     {
         log::debug() << std::string("Test") << log::endl;
@@ -57,7 +58,11 @@ int main(int argc, char** argv)
         {
             // tests the ability to reset the logger while using it
             log::warn() << "Changing logger..." << log::endl;
+            // TODO this might still randomly crash if the other threads are accessing the global logger instance while
+            // it is being reset, but this behavior is discouraged anyway...
             log::DEFAULT_LOGGER.reset(new log::ColoredLogger(std::wcout));
+            // test manually changing per-thread logger. This line would crash if the logger is not updated
+            log::setThreadLogger(log::DEFAULT_LOGGER.get());
             counter = 0;
         }
     }

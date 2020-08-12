@@ -76,12 +76,34 @@ namespace CPPLOG_NAMESPACE
     // Forward-declaration for the logger-instance
     class Logger;
     /*!
-     * This is the Logger-instance being used to write the logs.
+     * This is the default Logger-instance being used to write the logs.
      *
-     * Use this variable to set a custom Logger-instance.
-     * To disable logging (or stopping running logging), set this LOGGER to nullptr
+     * Use this variable to set a custom default Logger-instance.
+     * To disable logging (or stopping running logging), set this DEFAULT_LOGGER to nullptr.
+     *
+     * NOTE: Changing the DEFAULT_LOGGER instance while messages are being logged might lead to a race condition and is
+     * therefore discouraged!
      */
     extern std::unique_ptr<Logger> DEFAULT_LOGGER;
+
+    /*!
+     * Set the per-thread Logger-instance being used to write the logs.
+     *
+     * If not explicitly set, this will default to the DEFAULT_LOGGER Logger instance for every new thread.
+     * The per-thread Logger-instance can be reset to nullptr to fall back to the DEFAULT_LOGGER again.
+     *
+     * Since this reference is only used for the current active thread, it is safe to replace the per-thread
+     * Logger-instance at any point in the program execution (heeding the below notes).
+     *
+     * NOTE: This function does not take ownership of the logger instance, so the caller has to guarantee the
+     * Logger-instance to outlive the logging calls in this thread (or at least until the per-thread Logger-instance is
+     * overwritten).
+     *
+     * NOTE: Since the Logger for multiple threads can be set to the same instance, the Logger implementation may still
+     * need to synchronize the output.
+     *
+     */
+    void setThreadLogger(Logger* logger);
 } // namespace CPPLOG_NAMESPACE
 
 /*!
@@ -102,7 +124,7 @@ std::wostream& operator<<(std::wostream& stream, const std::string& string);
  * Convenience macro for lazy logging.
  *
  * Example usage:
- * CPPLOG_LAZY(Level::DEBUG, debug() << "Hello World! << endl; debug() << "Second statement!" << endl);
+ * CPPLOG_LAZY_BLOCK(Level::DEBUG, debug() << "Hello World! << endl; debug() << "Second statement!" << endl);
  */
 #define CPPLOG_LAZY_BLOCK(level, content) CPPLOG_NAMESPACE::logLazy(level, [&]() { content; })
 

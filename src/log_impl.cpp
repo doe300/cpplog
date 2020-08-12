@@ -8,7 +8,6 @@
 #include "../include/logger.h"
 
 #include <chrono>
-#include <mutex>
 #include <queue>
 #include <utility>
 
@@ -24,16 +23,22 @@ thread_local Local CPPLOG_NAMESPACE::internal::local;
 
 Local::Local() noexcept : level{CPPLOG_NAMESPACE::Level::DEBUG}, logger(nullptr) {}
 
-CPPLOG_NAMESPACE::Logger* Local::getLogger()
+bool Local::willBeLogged(Level messageLevel) const
 {
     if(logger)
-        return logger;
-    return CPPLOG_NAMESPACE::DEFAULT_LOGGER.get();
+        return logger->willBeLogged(messageLevel);
+    return DEFAULT_LOGGER && DEFAULT_LOGGER->willBeLogged(messageLevel);
 }
 
-void CPPLOG_NAMESPACE::internal::appendLog(const CPPLOG_NAMESPACE::Level level, const std::wstring& message,
-    const std::chrono::system_clock::time_point timestamp)
+void Local::writeMessage()
 {
-    if(local.getLogger())
-        local.getLogger()->logMessage(level, message, timestamp);
+    if(logger)
+        logger->logMessage(level, stream.str(), start);
+    else if(DEFAULT_LOGGER)
+        DEFAULT_LOGGER->logMessage(level, stream.str(), start);
+}
+
+void Local::setLogger(Logger* log)
+{
+    logger = log;
 }

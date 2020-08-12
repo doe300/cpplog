@@ -26,16 +26,15 @@ namespace CPPLOG_NAMESPACE
 
             explicit Local() noexcept;
 
-            Logger* getLogger();
+            bool willBeLogged(Level messageLevel) const;
+            void writeMessage();
+            void setLogger(Logger* log);
 
         private:
             Logger* logger;
         };
 
         extern thread_local Local local;
-
-        void appendLog(CPPLOG_NAMESPACE::Level level, const std::wstring& message,
-            std::chrono::system_clock::time_point timestamp);
     } // namespace internal
 } // namespace CPPLOG_NAMESPACE
 
