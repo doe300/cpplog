@@ -5,14 +5,14 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.config.name }}
+    name: ${{ matrix.config.name }} ${{ matrix.build_type }}
     runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
         build_type:
           [Release, Debug]
         config:
-        - name: "Windows Debug"
+        - name: "Windows"
           os: "windows-latest"
           cc: "cl"
           cxx: "cl"
@@ -29,10 +29,10 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Configure
-      run: |
-        set(ENV{CC} ${{ matrix.config.cc }})
-        set(ENV{CXX} ${{ matrix.config.cxx }})
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+      env:
+        CC: ${{ matrix.config.cc }}
+        CXX: ${{ matrix.config.cxx }}
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{ matrix.build_type }}
