@@ -1,0 +1,43 @@
+name: CMake Build and Test
+
+on:
+  [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        build_type:
+          [Release, Debug]
+        config:
+        - name: "Windows Debug"
+          os: "windows-latest"
+          cc: "cl"
+          cxx: "cl"
+        - name: "Linux GCC"
+          os: "ubuntu-latest"
+          cc: "gcc"
+          cxx: "g++"
+        - name: "Linux CLang"
+          os: "ubuntu-latest"
+          cc: "clang"
+          cxx: "clang++"
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Configure
+      run: |
+        set(ENV{CC} ${{ matrix.config.cc }})
+        set(ENV{CXX} ${{ matrix.config.cxx }})
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{ matrix.build_type }}
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: cpplog-test --short-test
+      
