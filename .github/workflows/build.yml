@@ -43,5 +43,5 @@ jobs:
       run: ${{github.workspace}}/build/cpplog-test --short-test
     - name: Test Windows
       if: ${{ matrix.config.os == 'windows-latest' }}
-      run: ${{github.workspace}}\\build\\cpplog-test --short-test
+      run: ${{github.workspace}}\build\cpplog-test --short-test
       
