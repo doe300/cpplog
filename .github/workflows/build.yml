@@ -39,9 +39,9 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{ matrix.build_type }}
 
     - name: Test Linux
-      if: ${{ matrix.config.os != "windows-latest" }}
+      if: ${{ matrix.config.os != 'windows-latest' }}
       run: ${{github.workspace}}/build/cpplog-test --short-test
     - name: Test Windows
-      if: ${{ matrix.config.os == "windows-latest" }}
+      if: ${{ matrix.config.os == 'windows-latest' }}
       run: ${{github.workspace}}\\build\\cpplog-test --short-test
       
