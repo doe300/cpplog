@@ -6,10 +6,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-project (cpplog VERSION 0.5)
+project (cpplog VERSION 0.6)
 
 option(CPPLOG_BUILD_TEST "Build the concurrency test-application" OFF)
 option(ENABLE_SANITIZERS "Enable build with various sanitizers" OFF)
+option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy" OFF)
 set(CPPLOG_NAMESPACE "log" CACHE STRING "Namespace for the cpplog library")
 
 set(SRCS
@@ -26,6 +27,10 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
+endif()
+
+if(ENABLE_CLANG_TIDY)
+	set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*,-abseil*,-android*,-boost*,-fuchsia*,-google*,-llvm*,-*objc*,-openmp*,-clang-analyzer-osx*,-hicpp*,-modernize*,-readability*")
 endif()
 
 if(WIN32)

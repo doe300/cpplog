@@ -16,6 +16,8 @@ CppLog is a very small library consisting of only two public header files:
 To support multi-threaded applications, any thread writing logs has its own instance of an output-stream where it assembles the logging output in.
 With the call of the *endl* function, the message is written to the output in a thread-safe fashion.
 
+To support parallel logging into different outputs, the per-thread Logger-instance can be set at any point without affecting any other thread.
+
 ## Usage
 
     //Top of the file:
@@ -36,9 +38,10 @@ CppLog can optionally be configured in several ways:
 
 - The macro **CPPLOG_NAMESPACE** determines the namespace, the logging framework is accessible in (defaults to *"log"*).
 **CPPLOG_NAMESPACE** can be chosen freely, as long as it remains a valid C++11 namespace name.
-- Setting the global variable **LOGGER** in the framework's namespace (by default **log::LOGGER**) determines the logger to be used.
-Resetting **LOGGER** to the *nullptr* disables logging for the remainder of the program's life. 
-This also shuts down the logging-thread, so no CPU time is wasted. By default, the **LOGGER** is set to **ConsoleLogger** (see section Extensions).
+- Setting the global variable **DEFAULT_LOGGER** in the framework's namespace (by default **log::DEFAULT_LOGGER**) determines the logger to be used.
+Resetting **DEFAULT_LOGGER** to the *nullptr* disables logging for the remainder of the program's life.
+This also shuts down the logging-thread, so no CPU time is wasted. By default, the **DEFAULT_LOGGER** is set to **ConsoleLogger** (see section Extensions).
+- The function *setThreadLogger* can be used to set a custom logger for the current thread to allow for logging parallel executions to different outputs.
 
 ## Extensions
 In the current version, CppLog comes with three built-in Loggers:
@@ -52,5 +55,5 @@ This Logger is enabled by default.
 To write your own Logger, simply follow this easy steps:
 
 1. Write a Logger-class publicly extending **Logger** (in the header-file **logger.h**) and overwrite at least **logMessage**.
-2. Use the global variable **LOGGER** to set the logger to an instance of your custom class
+2. Use the global variable **DEFAULT_LOGGER** to set the logger to an instance of your custom class
 3. Done!
