@@ -1,7 +1,7 @@
 # CppLog
 A very light-weight thread-safe extensible logging framework for C++.
 
-[![Build Status](https://travis-ci.org/doe300/cpplog.svg)](https://travis-ci.org/doe300/cpplog)
+[![Build Status](https://github.com/doe300/cpplog/actions/workflows/build.yml/badge.svg)](https://github.com/doe300/cpplog/actions/workflows/build.yml)
 [![GitHub license](https://img.shields.io/github/license/doe300/cpplog.svg)](https://github.com/doe300/cpplog/blob/master/LICENSE)
 [![Release](https://img.shields.io/github/tag/doe300/cpplog.svg)](https://github.com/doe300/cpplog/releases/latest)
 
