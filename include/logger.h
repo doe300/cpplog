@@ -40,9 +40,8 @@ namespace CPPLOG_NAMESPACE
         bool willBeLogged(Level level) const;
 
     protected:
-        virtual const std::string getCurrentTime();
-
-        virtual const std::wstring toString(Level level);
+        std::string toString(std::chrono::system_clock::time_point timestamp) const;
+        std::wstring toString(Level level) const;
 
         explicit Logger(Level minimumLevel = Level::INFO) noexcept;
 

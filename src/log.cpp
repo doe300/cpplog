@@ -9,14 +9,12 @@
 #include "log_impl.h"
 
 #include <chrono>
-#include <cstdarg>
-#include <iosfwd>
 #include <sstream>
 #include <vector>
 
 using namespace CPPLOG_NAMESPACE;
 
-std::wostream& CPPLOG_NAMESPACE::log(const Level level)
+std::wostream& CPPLOG_NAMESPACE::log(Level level)
 {
     auto& local = CPPLOG_NAMESPACE::internal::local;
     if(!(local.willBeLogged(level)))
@@ -51,29 +49,9 @@ std::wostream& CPPLOG_NAMESPACE::endl(std::wostream& stream)
     return local.stream;
 }
 
-void CPPLOG_NAMESPACE::logf(const Level level, const wchar_t* format, ...)
+bool CPPLOG_NAMESPACE::willBeLogged(Level level)
 {
-    static const std::size_t bufferSize = 4096;
-    std::vector<wchar_t> buffer(bufferSize);
-    va_list args;
-    va_start(args, format);
-    int num = vswprintf(buffer.data(), buffer.size(), format, args);
-    va_end(args);
-    log(level) << std::wstring(buffer.data(), static_cast<std::size_t>(num)) << endl;
-}
-
-void CPPLOG_NAMESPACE::logLazy(Level level, std::function<void(std::wostream&)>&& statement)
-{
-    auto& local = CPPLOG_NAMESPACE::internal::local;
-    if(local.willBeLogged(level))
-        statement(log(level));
-}
-
-void CPPLOG_NAMESPACE::logLazy(Level level, std::function<void()>&& statement)
-{
-    auto& local = CPPLOG_NAMESPACE::internal::local;
-    if(local.willBeLogged(level))
-        statement();
+    return CPPLOG_NAMESPACE::internal::local.willBeLogged(level);
 }
 
 void CPPLOG_NAMESPACE::setThreadLogger(Logger* logger)

@@ -13,9 +13,9 @@
 
 using namespace CPPLOG_NAMESPACE;
 
-Logger::Logger(const Level minimumLevel) noexcept : writeLock(), minLevel(minimumLevel) {}
+Logger::Logger(Level minimumLevel) noexcept : writeLock(), minLevel(minimumLevel) {}
 
-bool Logger::willBeLogged(const Level level) const
+bool Logger::willBeLogged(Level level) const
 {
     switch(minLevel)
     {
@@ -34,16 +34,22 @@ bool Logger::willBeLogged(const Level level) const
     }
 }
 
-const std::string Logger::getCurrentTime()
+std::string Logger::toString(std::chrono::system_clock::time_point timestamp) const
 {
-    time_t now = time(nullptr);
-    std::string text = ctime(&now);
+    auto time = std::chrono::system_clock::to_time_t(timestamp);
+#ifdef _POSIX_C_SOURCE
+    // ctime is not thread-safe so use thread-safe alternative
+    std::array<char, 1024> buff = {0};
+    std::string text = ctime_r(&time, buff.data());
+#else
+    std::string text = ctime(&time);
+#endif
     // required, since ctime (asctime) append a new-line
     text.erase(text.find_last_of('\n'), 1);
     return text;
 }
 
-const std::wstring Logger::toString(Level level)
+std::wstring Logger::toString(Level level) const
 {
     switch(level)
     {
@@ -61,21 +67,20 @@ const std::wstring Logger::toString(Level level)
     }
 }
 
-ConsoleLogger::ConsoleLogger(const Level minimumLevel) noexcept : Logger(minimumLevel) {}
+ConsoleLogger::ConsoleLogger(Level minimumLevel) noexcept : Logger(minimumLevel) {}
 
-void ConsoleLogger::logMessage(
-    const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp)
+void ConsoleLogger::logMessage(Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp)
 {
     if(!willBeLogged(level))
         return;
     std::lock_guard<std::mutex> guard(writeLock);
     if(level == Level::ERROR || level == Level::SEVERE)
-        std::wcerr << toString(level) << " " << getCurrentTime() << ": " << local;
+        std::wcerr << toString(level) << " " << toString(timestamp) << ": " << local;
     else
-        std::wcout << toString(level) << " " << getCurrentTime() << ": " << local;
+        std::wcout << toString(level) << " " << toString(timestamp) << ": " << local;
 }
 
-FileLogger::FileLogger(const std::string& fileName, const Level minimumLevel) :
+FileLogger::FileLogger(const std::string& fileName, Level minimumLevel) :
     Logger(minimumLevel), fileStream(fileName, std::ios::out)
 {
 }
@@ -86,39 +91,36 @@ FileLogger::~FileLogger()
     fileStream.close();
 }
 
-void FileLogger::logMessage(
-    const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp)
+void FileLogger::logMessage(Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp)
 {
     if(!willBeLogged(level))
         return;
     std::lock_guard<std::mutex> guard(writeLock);
-    fileStream << toString(level) << " " << getCurrentTime() << ": " << local;
+    fileStream << toString(level) << " " << toString(timestamp) << ": " << local;
 }
 
-StreamLogger::StreamLogger(std::wostream& out, const Level minimumLevel) : Logger(minimumLevel), stream(out) {}
+StreamLogger::StreamLogger(std::wostream& out, Level minimumLevel) : Logger(minimumLevel), stream(out) {}
 
-void StreamLogger::logMessage(
-    const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp)
+void StreamLogger::logMessage(Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp)
 {
     if(!willBeLogged(level))
         return;
     std::lock_guard<std::mutex> guard(writeLock);
-    stream << toString(level) << " " << getCurrentTime() << ": " << local;
+    stream << toString(level) << " " << toString(timestamp) << ": " << local;
 }
 
-ColoredLogger::ColoredLogger(std::wostream& out, const Level minimumLevel) : StreamLogger(out, minimumLevel) {}
+ColoredLogger::ColoredLogger(std::wostream& out, Level minimumLevel) : StreamLogger(out, minimumLevel) {}
 
-void ColoredLogger::logMessage(
-    const Level level, const std::wstring& local, const std::chrono::system_clock::time_point timestamp)
+void ColoredLogger::logMessage(Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp)
 {
     if(!willBeLogged(level))
         return;
     std::lock_guard<std::mutex> guard(writeLock);
     if(level == Level::ERROR || level == Level::SEVERE)
-        stream << "\033[31m" << toString(level) << " " << getCurrentTime() << ": " << local << "\033[39;49m";
+        stream << "\033[31m" << toString(level) << " " << toString(timestamp) << ": " << local << "\033[39;49m";
     else if(level == Level::WARNING)
-        stream << "\033[33m" << toString(level) << " " << getCurrentTime() << ": " << local << "\033[39;49m";
+        stream << "\033[33m" << toString(level) << " " << toString(timestamp) << ": " << local << "\033[39;49m";
     else
-        stream << toString(level) << " " << getCurrentTime() << ": " << local;
+        stream << toString(level) << " " << toString(timestamp) << ": " << local;
     stream.flush();
 }

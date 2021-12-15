@@ -57,21 +57,41 @@ namespace CPPLOG_NAMESPACE
         return CPPLOG_NAMESPACE::log(Level::SEVERE);
     }
 
-    void logf(Level level, const wchar_t* format, ...);
+    template <typename Func>
+    using CallableWithLogStream = std::is_convertible<Func, std::function<void(std::wostream&)>>;
+
+    /*!
+     * Returns whether a log statement with the given level would be logged for the current configuration.
+     */
+    bool willBeLogged(Level level);
 
     /*!
      * Wrapper around a logging statement to only execute it if the level of logging
      * will be written to the output.
      * This can be used to skip complex logging statements when not required.
      */
-    void logLazy(Level level, std::function<void(std::wostream&)>&& statement);
+    template <typename Func>
+    typename std::enable_if<CallableWithLogStream<Func>::value>::type logLazy(Level level, Func&& statement)
+    {
+        if(willBeLogged(level))
+        {
+            statement(log(level));
+        }
+    }
 
     /*!
      * Wrapper around several logging statements to only execute them if the level of
      * logging will be written to the output.
      * This can be used to skip complex logging statements when not required.
      */
-    void logLazy(Level level, std::function<void()>&& statement);
+    template <typename Func>
+    typename std::enable_if<!CallableWithLogStream<Func>::value>::type logLazy(Level level, Func&& statement)
+    {
+        if(willBeLogged(level))
+        {
+            statement();
+        }
+    }
 
     // Forward-declaration for the logger-instance
     class Logger;
