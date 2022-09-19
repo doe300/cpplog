@@ -7,6 +7,7 @@
 
 #include "logger.h"
 
+#include <array>
 #include <ctime>
 #include <ios>
 #include <iostream>
