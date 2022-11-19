@@ -1,8 +1,7 @@
 /*
- * File:   log.cpp
  * Author: doe300
  *
- * Created on September 16, 2016, 1:33 PM
+ * See the file "LICENSE" for the full license governing this code.
  */
 #include "log.h"
 
@@ -12,11 +11,11 @@
 #include <sstream>
 #include <vector>
 
-using namespace CPPLOG_NAMESPACE;
+using namespace cpplog;
 
-std::wostream& CPPLOG_NAMESPACE::log(Level level)
+std::wostream& cpplog::log(Level level)
 {
-    auto& local = CPPLOG_NAMESPACE::internal::local;
+    auto& local = cpplog::internal::local;
     if(!(local.willBeLogged(level)))
     {
         // apparently setting the bad-bit will prevent the << operators from running conversion, which saves some
@@ -32,10 +31,10 @@ std::wostream& CPPLOG_NAMESPACE::log(Level level)
     return local.stream;
 }
 
-std::wostream& CPPLOG_NAMESPACE::endl(std::wostream& stream)
+std::wostream& cpplog::endl(std::wostream& stream)
 {
     stream << std::endl;
-    auto& local = CPPLOG_NAMESPACE::internal::local;
+    auto& local = cpplog::internal::local;
     if(!local.stream.bad())
     {
         // only write to underyling logger, if we didn't set the bad-bit
@@ -49,14 +48,14 @@ std::wostream& CPPLOG_NAMESPACE::endl(std::wostream& stream)
     return local.stream;
 }
 
-bool CPPLOG_NAMESPACE::willBeLogged(Level level)
+bool cpplog::willBeLogged(Level level)
 {
-    return CPPLOG_NAMESPACE::internal::local.willBeLogged(level);
+    return cpplog::internal::local.willBeLogged(level);
 }
 
-void CPPLOG_NAMESPACE::setThreadLogger(Logger* logger)
+void cpplog::setThreadLogger(Logger* logger)
 {
-    auto& local = CPPLOG_NAMESPACE::internal::local;
+    auto& local = cpplog::internal::local;
     local.setLogger(logger);
 }
 

@@ -1,8 +1,7 @@
 /*
- * File:   log_impl.cpp
  * Author: doe300
  *
- * Created on September 16, 2016, 1:46 PM
+ * See the file "LICENSE" for the full license governing this code.
  */
 #include "log_impl.h"
 #include "../include/logger.h"
@@ -11,17 +10,16 @@
 #include <queue>
 #include <utility>
 
-using namespace CPPLOG_NAMESPACE::internal;
+using namespace cpplog::internal;
 
 // Global logger
 #ifndef CPPLOG_CUSTOM_LOGGER
-std::unique_ptr<CPPLOG_NAMESPACE::Logger> CPPLOG_NAMESPACE::DEFAULT_LOGGER =
-    std::unique_ptr<CPPLOG_NAMESPACE::Logger>(new CPPLOG_NAMESPACE::ConsoleLogger());
+std::unique_ptr<cpplog::Logger> cpplog::DEFAULT_LOGGER = std::unique_ptr<cpplog::Logger>(new cpplog::ConsoleLogger());
 #endif
 
-thread_local Local CPPLOG_NAMESPACE::internal::local;
+thread_local Local cpplog::internal::local;
 
-Local::Local() noexcept : level{CPPLOG_NAMESPACE::Level::DEBUG}, logger(nullptr) {}
+Local::Local() noexcept : level{cpplog::Level::DEBUG}, logger(nullptr) {}
 
 bool Local::willBeLogged(Level messageLevel) const
 {

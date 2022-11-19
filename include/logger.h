@@ -1,11 +1,10 @@
 /*
- * File:   logger.h
  * Author: doe300
  *
- * Created on September 16, 2016, 1:56 PM
+ * See the file "LICENSE" for the full license governing this code.
  */
-#ifndef LOGGER_H
-#define LOGGER_H
+#ifndef CPPLOG_LOGGER_H
+#define CPPLOG_LOGGER_H
 
 #include "log.h"
 
@@ -13,7 +12,7 @@
 #include <fstream>
 #include <mutex>
 
-namespace CPPLOG_NAMESPACE
+namespace cpplog
 {
     class Logger
     {
@@ -114,6 +113,6 @@ namespace CPPLOG_NAMESPACE
         void logMessage(
             Level level, const std::wstring& local, std::chrono::system_clock::time_point timestamp) override;
     };
-} // namespace CPPLOG_NAMESPACE
+} // namespace cpplog
 
-#endif /* LOGGER_H */
+#endif /* CPPLOG_LOGGER_H */

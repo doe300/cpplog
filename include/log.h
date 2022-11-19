@@ -1,18 +1,17 @@
 /*
- * File:   log.h
  * Author: doe300
  *
- * Created on September 16, 2016, 1:33 PM
+ * See the file "LICENSE" for the full license governing this code.
  */
-#ifndef LOG_H
-#define LOG_H
+#ifndef CPPLOG_LOG_H
+#define CPPLOG_LOG_H
 
 #include <functional>
 #include <memory>
 #include <ostream>
 #include <string>
 
-namespace CPPLOG_NAMESPACE
+namespace cpplog
 {
     /*!
      * The log-level
@@ -34,27 +33,27 @@ namespace CPPLOG_NAMESPACE
 
     inline std::wostream& debug()
     {
-        return CPPLOG_NAMESPACE::log(Level::DEBUG);
+        return cpplog::log(Level::DEBUG);
     }
 
     inline std::wostream& info()
     {
-        return CPPLOG_NAMESPACE::log(Level::INFO);
+        return cpplog::log(Level::INFO);
     }
 
     inline std::wostream& warn()
     {
-        return CPPLOG_NAMESPACE::log(Level::WARNING);
+        return cpplog::log(Level::WARNING);
     }
 
     inline std::wostream& error()
     {
-        return CPPLOG_NAMESPACE::log(Level::ERROR);
+        return cpplog::log(Level::ERROR);
     }
 
     inline std::wostream& severe()
     {
-        return CPPLOG_NAMESPACE::log(Level::SEVERE);
+        return cpplog::log(Level::SEVERE);
     }
 
     template <typename Func>
@@ -124,7 +123,7 @@ namespace CPPLOG_NAMESPACE
      *
      */
     void setThreadLogger(Logger* logger);
-} // namespace CPPLOG_NAMESPACE
+} // namespace cpplog
 
 /*!
  * Convenience-wrapper to allow writing std::string into std::wostream
@@ -138,7 +137,7 @@ std::wostream& operator<<(std::wostream& stream, const std::string& string);
  * Example usage:
  * CPPLOG_LAZY(Level::DEBUG, log << "Hello World! << endl);
  */
-#define CPPLOG_LAZY(level, content) CPPLOG_NAMESPACE::logLazy(level, [&](std::wostream& log) { content; })
+#define CPPLOG_LAZY(level, content) cpplog::logLazy(level, [&](std::wostream& log) { content; })
 
 /*!
  * Convenience macro for lazy logging.
@@ -146,6 +145,13 @@ std::wostream& operator<<(std::wostream& stream, const std::string& string);
  * Example usage:
  * CPPLOG_LAZY_BLOCK(Level::DEBUG, debug() << "Hello World! << endl; debug() << "Second statement!" << endl);
  */
-#define CPPLOG_LAZY_BLOCK(level, content) CPPLOG_NAMESPACE::logLazy(level, [&]() { content; })
+#define CPPLOG_LAZY_BLOCK(level, content) cpplog::logLazy(level, [&]() { content; })
 
-#endif /* LOG_H */
+#ifdef CPPLOG_NAMESPACE
+namespace CPPLOG_NAMESPACE
+{
+    using namespace cpplog;
+} // namespace CPPLOG_NAMESPACE
+#endif
+
+#endif /* CPPLOG_LOG_H */

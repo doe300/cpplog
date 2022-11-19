@@ -1,8 +1,7 @@
 /*
- * File:   logger.cpp
  * Author: doe300
  *
- * Created on September 16, 2016, 1:56 PM
+ * See the file "LICENSE" for the full license governing this code.
  */
 
 #include "logger.h"
@@ -12,7 +11,7 @@
 #include <ios>
 #include <iostream>
 
-using namespace CPPLOG_NAMESPACE;
+using namespace cpplog;
 
 Logger::Logger(Level minimumLevel) noexcept : writeLock(), minLevel(minimumLevel) {}
 

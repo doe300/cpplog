@@ -1,8 +1,7 @@
 /*
- * File:   log_impl.h
  * Author: doe300
  *
- * Created on September 16, 2016, 1:46 PM
+ * See the file "LICENSE" for the full license governing this code.
  */
 
 #ifndef LOG_IMPL_H
@@ -13,7 +12,7 @@
 #include <chrono>
 #include <sstream>
 
-namespace CPPLOG_NAMESPACE
+namespace cpplog
 {
     namespace internal
     {
@@ -22,7 +21,7 @@ namespace CPPLOG_NAMESPACE
         public:
             std::wstringstream stream;
             std::chrono::system_clock::time_point start;
-            CPPLOG_NAMESPACE::Level level;
+            cpplog::Level level;
 
             explicit Local() noexcept;
 
@@ -36,6 +35,6 @@ namespace CPPLOG_NAMESPACE
 
         extern thread_local Local local;
     } // namespace internal
-} // namespace CPPLOG_NAMESPACE
+} // namespace cpplog
 
 #endif /* LOG_IMPL_H */

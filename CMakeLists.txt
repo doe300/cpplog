@@ -6,12 +6,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-project (cpplog VERSION 0.6)
+project (cpplog VERSION 0.7)
 
 option(CPPLOG_BUILD_TEST "Build the concurrency test-application" OFF)
 option(ENABLE_SANITIZERS "Enable build with various sanitizers" OFF)
 option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy" OFF)
-set(CPPLOG_NAMESPACE "log" CACHE STRING "Namespace for the cpplog library")
 
 set(SRCS
 	include/log.h
@@ -30,7 +29,7 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 endif()
 
 if(ENABLE_CLANG_TIDY)
-	set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*,-abseil*,-android*,-boost*,-fuchsia*,-google*,-llvm*,-*objc*,-openmp*,-clang-analyzer-osx*,-hicpp*,-modernize*,-readability*")
+	set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*,-abseil*,-android*,-altera*,-boost*,-fuchsia*,-google*,-llvm*,-*objc*,-openmp*,-clang-analyzer-osx*,-hicpp*,-modernize*,-readability*,-cert*,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-avoid-non-const-global-variables")
 endif()
 
 if(WIN32)
@@ -39,21 +38,18 @@ if(WIN32)
 else()
 	add_library(cpplog SHARED ${SRCS})
 	add_library(cpplog-static STATIC ${SRCS})
-	target_compile_options(cpplog PRIVATE -O3 -Wall -Wextra -Wold-style-cast -Wno-unused-parameter -Wno-missing-field-initializers -Wpedantic -pthread -fPIC)
-	target_compile_options(cpplog-static PRIVATE -O3 -Wall -Wextra -Wold-style-cast -Wno-unused-parameter -Wno-missing-field-initializers -Wpedantic -pthread -fPIC)
+	target_compile_options(cpplog PRIVATE -O3 -Wall -Wextra -Wold-style-cast -Wpedantic -pthread -fPIC)
+	target_compile_options(cpplog-static PRIVATE -O3 -Wall -Wextra -Wold-style-cast -Wpedantic -pthread -fPIC)
 endif()
 
-target_compile_definitions(cpplog PUBLIC -DCPPLOG_NAMESPACE=${CPPLOG_NAMESPACE})
-
-# If CPPLOG_CUSTOM_LOGGER is set via command-line, the global CPPLOG_NAMESPACE::LOGGER variable needs to be given by the application including this library
+# If CPPLOG_CUSTOM_LOGGER is set via command-line, the global cpplog::LOGGER variable needs to be given by the application including this library
 if(CPPLOG_CUSTOM_LOGGER)
 	target_compile_definitions(cpplog PUBLIC -DCPPLOG_CUSTOM_LOGGER)
 endif()
 
 if(TARGET cpplog-static)
-	target_compile_definitions(cpplog-static PUBLIC -DCPPLOG_NAMESPACE=${CPPLOG_NAMESPACE})
 	target_include_directories(cpplog-static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-	
+
 	if(CPPLOG_CUSTOM_LOGGER)
 		target_compile_definitions(cpplog-static PUBLIC -DCPPLOG_CUSTOM_LOGGER)
 	endif()
@@ -64,13 +60,12 @@ if(ENABLE_SANITIZERS)
 	target_compile_options(cpplog PRIVATE -fsanitize=address -fsanitize=leak -fsanitize=undefined)
 	target_compile_options(cpplog PRIVATE -fdelete-null-pointer-checks -Wnull-dereference -Wuninitialized -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wsuggest-override -Wconversion -Wzero-as-null-pointer-constant)
 	target_link_options(cpplog PUBLIC -fsanitize=address -fsanitize=leak -fsanitize=undefined)
-	
+
 	if(TARGET cpplog-static)
 		target_compile_options(cpplog-static PRIVATE -fsanitize=address -fsanitize=leak -fsanitize=undefined)
 		target_compile_options(cpplog-static PRIVATE -fdelete-null-pointer-checks -Wnull-dereference -Wuninitialized -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wsuggest-override -Wconversion -Wzero-as-null-pointer-constant)
 		target_link_options(cpplog-static PUBLIC -fsanitize=address -fsanitize=leak -fsanitize=undefined)
 	endif()
-
 endif()
 
 # "For shared libraries VERSION and SOVERSION can be used to specify the build version and API version respectively."
@@ -88,7 +83,7 @@ if(CPPLOG_BUILD_TEST)
 	add_executable(cpplog-test "main.cpp")
 	target_link_libraries(cpplog-test cpplog)
 	set_target_properties(cpplog-test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build")
-	
+
 	find_package(Threads)
 	target_link_libraries(cpplog-test ${CMAKE_THREAD_LIBS_INIT})
 endif()
@@ -98,7 +93,7 @@ endif()
 # Installation targets
 ##
 # Adds the public headers to the target, so they are exported
-target_include_directories(cpplog PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  $<INSTALL_INTERFACE:include/cpplog>)
+target_include_directories(cpplog PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include/cpplog>)
 # Creates the install target for the library
 install(TARGETS cpplog EXPORT cpplog-targets LIBRARY DESTINATION lib)
 # Creates the export target (to be used by CMake to find the INSTALLED library)

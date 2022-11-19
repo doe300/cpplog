@@ -1,8 +1,7 @@
 /*
- * File:   main.cpp
  * Author: doe300
  *
- * Created on September 16, 2016, 2:36 PM
+ * See the file "LICENSE" for the full license governing this code.
  */
 
 #include <chrono>
@@ -20,13 +19,12 @@ static void logThread()
     const int threadID = std::rand();
     while(true)
     {
-        CPPLOG_NAMESPACE::debug() << "Test from: " << threadID << CPPLOG_NAMESPACE::endl;
+        cpplog::debug() << "Test from: " << threadID << cpplog::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        CPPLOG_NAMESPACE::error() << "Test 2 from : " << threadID << CPPLOG_NAMESPACE::endl;
-        CPPLOG_LAZY(CPPLOG_NAMESPACE::Level::INFO, log << "Lazy logging!" << CPPLOG_NAMESPACE::endl);
-        CPPLOG_LAZY_BLOCK(
-            CPPLOG_NAMESPACE::Level::INFO, CPPLOG_NAMESPACE::info() << "More lazy logging" << CPPLOG_NAMESPACE::endl;
-            CPPLOG_NAMESPACE::debug() << "Even more lazy logging" << CPPLOG_NAMESPACE::endl);
+        cpplog::error() << "Test 2 from : " << threadID << cpplog::endl;
+        CPPLOG_LAZY(cpplog::Level::INFO, log << "Lazy logging!" << cpplog::endl);
+        CPPLOG_LAZY_BLOCK(cpplog::Level::INFO, cpplog::info() << "More lazy logging" << cpplog::endl;
+                          cpplog::debug() << "Even more lazy logging" << cpplog::endl);
     }
 }
 
@@ -42,12 +40,12 @@ struct NonCopyMoveableLogCallback
 
     void operator()(std::wostream& out) const
     {
-        out << "SNAFU" << CPPLOG_NAMESPACE::endl;
+        out << "SNAFU" << cpplog::endl;
     }
 
     void operator()() const
     {
-        CPPLOG_NAMESPACE::warn() << "This is also fine!" << CPPLOG_NAMESPACE::endl;
+        cpplog::warn() << "This is also fine!" << cpplog::endl;
     }
 };
 
@@ -58,9 +56,9 @@ int main(int argc, char** argv)
 {
     (void) argc;
     (void) argv;
-    CPPLOG_NAMESPACE::DEFAULT_LOGGER.reset(new CPPLOG_NAMESPACE::ColoredLogger(std::wcout));
+    cpplog::DEFAULT_LOGGER.reset(new cpplog::ColoredLogger(std::wcout));
 
-    CPPLOG_NAMESPACE::info() << "Dummy" << CPPLOG_NAMESPACE::endl;
+    cpplog::info() << "Dummy" << cpplog::endl;
 
     for(int i = 0; i < 10; i++)
     {
@@ -69,7 +67,7 @@ int main(int argc, char** argv)
 
     unsigned counter = 0;
 
-    CPPLOG_NAMESPACE::setThreadLogger(CPPLOG_NAMESPACE::DEFAULT_LOGGER.get());
+    cpplog::setThreadLogger(cpplog::DEFAULT_LOGGER.get());
     auto start = std::chrono::steady_clock::now();
     auto end = start + std::chrono::seconds{10};
     if(argc > 1 && argv[1] == std::string{"--short-test"})
@@ -78,34 +76,33 @@ int main(int argc, char** argv)
     }
     while(std::chrono::steady_clock::now() < end)
     {
-        CPPLOG_NAMESPACE::debug() << std::string("Test") << CPPLOG_NAMESPACE::endl;
+        cpplog::debug() << std::string("Test") << cpplog::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        CPPLOG_NAMESPACE::error() << "Test2" << CPPLOG_NAMESPACE::endl;
-        CPPLOG_NAMESPACE::logLazy(CPPLOG_NAMESPACE::Level::INFO,
+        cpplog::error() << "Test2" << cpplog::endl;
+        cpplog::logLazy(cpplog::Level::INFO,
             [](std::wostream& out)
             {
                 NonCopyMoveableLogCallback logCallback;
                 logCallback(out);
             });
-        CPPLOG_NAMESPACE::logLazy(CPPLOG_NAMESPACE::Level::WARNING,
+        cpplog::logLazy(cpplog::Level::WARNING,
             []()
             {
                 NonCopyMoveableLogCallback logCallback;
                 logCallback();
             });
-        CPPLOG_LAZY(CPPLOG_NAMESPACE::Level::DEBUG, log << "FOOBAR" << CPPLOG_NAMESPACE::endl);
-        CPPLOG_LAZY_BLOCK(
-            CPPLOG_NAMESPACE::Level::WARNING, CPPLOG_NAMESPACE::warn() << "This is fine!" << CPPLOG_NAMESPACE::endl);
+        CPPLOG_LAZY(cpplog::Level::DEBUG, log << "FOOBAR" << cpplog::endl);
+        CPPLOG_LAZY_BLOCK(cpplog::Level::WARNING, cpplog::warn() << "This is fine!" << cpplog::endl);
         ++counter;
         if(counter > 100)
         {
             // tests the ability to reset the logger while using it
-            CPPLOG_NAMESPACE::warn() << "Changing logger..." << CPPLOG_NAMESPACE::endl;
+            cpplog::warn() << "Changing logger..." << cpplog::endl;
             // TODO this might still randomly crash if the other threads are accessing the global logger instance while
             // it is being reset, but this behavior is discouraged anyway...
-            CPPLOG_NAMESPACE::DEFAULT_LOGGER.reset(new CPPLOG_NAMESPACE::ColoredLogger(std::wcout));
+            cpplog::DEFAULT_LOGGER.reset(new cpplog::ColoredLogger(std::wcout));
             // test manually changing per-thread logger. This line would crash if the logger is not updated
-            CPPLOG_NAMESPACE::setThreadLogger(CPPLOG_NAMESPACE::DEFAULT_LOGGER.get());
+            cpplog::setThreadLogger(cpplog::DEFAULT_LOGGER.get());
             counter = 0;
         }
     }
